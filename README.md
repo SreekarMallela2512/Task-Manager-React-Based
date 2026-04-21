@@ -2,7 +2,8 @@
 
 A high-performance, responsive task management application built with **React 19** and **Tailwind CSS**. This project demonstrates advanced React patterns for state management and local data persistence.
 
-## 🛠️ Technical Implementation
+### 🛠️ Technical Implementation
+🔗 [Live Demo](https://task-manager-react-based.vercel.app/)
 
 - **State Management:** Architected using **React Context API** and the **useReducer** hook to manage complex state transitions (CRUD) with a predictable data flow.
 - **Dynamic Filtering & Sorting:** Implemented real-time search, priority-based filtering, and chronological sorting using **useMemo** to optimize rendering performance.
