@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTask } from '../context/TaskContext';
 import { HiOutlinePencilSquare, HiOutlineTrash, HiOutlineClock } from 'react-icons/hi2';
 
@@ -6,6 +6,7 @@ const TaskCard = ({ task, onEdit }) => {
   const { deleteTask } = useTask();
   const [showConfirm, setShowConfirm] = useState(false);
 
+  // We assign a color and pulse effect based on the priority to make important tasks pop out.
   const priorityConfig = {
     High: { badge: 'bg-red-500/15 text-red-400', dot: 'high' },
     Medium: { badge: 'bg-amber-500/15 text-amber-400', dot: 'medium' },
@@ -14,6 +15,7 @@ const TaskCard = ({ task, onEdit }) => {
 
   const config = priorityConfig[task.priority];
 
+  // A helper to make the ISO date string look beautiful and easy to read.
   const formatDate = (iso) => {
     const d = new Date(iso);
     return d.toLocaleDateString('en-US', {
@@ -23,12 +25,20 @@ const TaskCard = ({ task, onEdit }) => {
     });
   };
 
+  // We use a small timeout to clear the confirmation if the user clicks away or changes their mind.
+  useEffect(() => {
+    let timer;
+    if (showConfirm) {
+      timer = setTimeout(() => setShowConfirm(false), 3000);
+    }
+    return () => clearTimeout(timer);
+  }, [showConfirm]);
+
   const handleDelete = () => {
     if (showConfirm) {
       deleteTask(task.id);
     } else {
       setShowConfirm(true);
-      setTimeout(() => setShowConfirm(false), 3000);
     }
   };
 
@@ -65,6 +75,8 @@ const TaskCard = ({ task, onEdit }) => {
           >
             <HiOutlinePencilSquare className="w-4 h-4" />
           </button>
+          
+          {/* Hitting delete once asks for confirmation, the second click actually removes it. */}
           <button
             id={`delete-task-${task.id}`}
             onClick={handleDelete}

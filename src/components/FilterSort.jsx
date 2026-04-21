@@ -6,6 +6,7 @@ const FILTERS = ['All', 'High', 'Medium', 'Low'];
 const FilterSort = () => {
   const { priorityFilter, setPriorityFilter, sortOrder, setSortOrder } = useTask();
 
+  // We assign a specific theme to each filter button when it's active.
   const activeColor = {
     All: 'bg-brand-500/20 text-brand-300 border-brand-500/40',
     High: 'bg-red-500/15 text-red-400 border-red-500/30',
@@ -17,6 +18,8 @@ const FilterSort = () => {
     <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center" id="filter-sort">
       <div className="flex items-center gap-2 flex-1">
         <HiOutlineFunnel className="w-4 h-4 text-text-muted shrink-0" />
+        
+        {/* Buttons to quickly filter tasks by priority level */}
         <div className="flex gap-1.5 flex-wrap">
           {FILTERS.map((f) => (
             <button
@@ -34,6 +37,8 @@ const FilterSort = () => {
           ))}
         </div>
       </div>
+      
+      {/* Dropdown to switch between seeing oldest or newest tasks first */}
       <div className="flex items-center gap-2">
         <HiOutlineArrowsUpDown className="w-4 h-4 text-text-muted shrink-0" />
         <select

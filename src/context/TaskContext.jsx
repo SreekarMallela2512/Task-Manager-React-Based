@@ -1,8 +1,8 @@
 import { createContext, useContext, useReducer, useEffect, useMemo, useState } from 'react';
 
-/* ─── helpers ─── */
 const STORAGE_KEY = 'task-manager-tasks';
 
+// Let's grab the tasks from local storage so we don't lose them on a page refresh.
 const loadTasks = () => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -16,10 +16,9 @@ const saveTasks = (tasks) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
 };
 
-const generateId = () =>
-  Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
+const generateId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
 
-/* ─── reducer ─── */
+// Our reducer handles all the heavy lifting for adding, editing, and deleting tasks safely.
 const taskReducer = (state, action) => {
   switch (action.type) {
     case 'ADD_TASK': {
@@ -34,21 +33,17 @@ const taskReducer = (state, action) => {
     }
     case 'DELETE_TASK':
       return state.filter((t) => t.id !== action.payload);
-
     case 'EDIT_TASK':
       return state.map((t) =>
         t.id === action.payload.id ? { ...t, ...action.payload.updates } : t
       );
-
     case 'SET_TASKS':
       return action.payload;
-
     default:
       return state;
   }
 };
 
-/* ─── context ─── */
 const TaskContext = createContext(null);
 
 export const TaskProvider = ({ children }) => {
@@ -57,27 +52,24 @@ export const TaskProvider = ({ children }) => {
   const [priorityFilter, setPriorityFilter] = useState('All');
   const [sortOrder, setSortOrder] = useState('newest');
 
-  // Persist to localStorage on every change
+  // Keep our local storage up to date whenever our tasks change.
   useEffect(() => {
     saveTasks(tasks);
   }, [tasks]);
 
-  // Derived: filtered + sorted tasks
+  // We filter and sort our tasks here so the UI components just get exactly what they need to show.
   const filteredTasks = useMemo(() => {
     let result = [...tasks];
 
-    // Search filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       result = result.filter((t) => t.title.toLowerCase().includes(q));
     }
 
-    // Priority filter
     if (priorityFilter !== 'All') {
       result = result.filter((t) => t.priority === priorityFilter);
     }
 
-    // Sort
     result.sort((a, b) => {
       const da = new Date(a.createdAt);
       const db = new Date(b.createdAt);
@@ -87,12 +79,11 @@ export const TaskProvider = ({ children }) => {
     return result;
   }, [tasks, searchQuery, priorityFilter, sortOrder]);
 
-  // Actions
   const addTask = (task) => dispatch({ type: 'ADD_TASK', payload: task });
   const deleteTask = (id) => dispatch({ type: 'DELETE_TASK', payload: id });
-  const editTask = (id, updates) =>
-    dispatch({ type: 'EDIT_TASK', payload: { id, updates } });
+  const editTask = (id, updates) => dispatch({ type: 'EDIT_TASK', payload: { id, updates } });
 
+  // Bundle everything up nicely so any component can use these values and actions.
   const value = {
     tasks,
     filteredTasks,
@@ -110,8 +101,9 @@ export const TaskProvider = ({ children }) => {
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;
 };
 
+// A handy custom hook to make using the context a breeze in our components.
 export const useTask = () => {
   const ctx = useContext(TaskContext);
-  if (!ctx) throw new Error('useTask must be used within a TaskProvider');
+  if (!ctx) throw new Error('Oops! useTask must be used within a TaskProvider.');
   return ctx;
 };

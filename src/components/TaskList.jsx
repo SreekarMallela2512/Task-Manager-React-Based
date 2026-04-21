@@ -5,7 +5,7 @@ import { HiOutlineClipboardDocumentList, HiOutlineMagnifyingGlass } from 'react-
 const TaskList = ({ onEdit }) => {
   const { filteredTasks, tasks, searchQuery, priorityFilter } = useTask();
 
-  // Empty state when no tasks exist at all
+  // If the user hasn't added any tasks yet, show a welcoming empty state.
   if (tasks.length === 0) {
     return (
       <div className="empty-state animate-fade-in">
@@ -20,7 +20,7 @@ const TaskList = ({ onEdit }) => {
     );
   }
 
-  // Empty state when filters/search yield no results
+  // When they're searching but come up empty-handed, we guide them gracefully.
   if (filteredTasks.length === 0) {
     return (
       <div className="empty-state animate-fade-in">
@@ -37,6 +37,7 @@ const TaskList = ({ onEdit }) => {
     );
   }
 
+  // Display the matched tasks in a nicely spaced out list!
   return (
     <div className="space-y-3 stagger-children" id="task-list">
       {filteredTasks.map((task) => (

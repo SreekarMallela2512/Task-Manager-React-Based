@@ -12,6 +12,7 @@ const TaskForm = () => {
   const [priority, setPriority] = useState('Medium');
   const [errors, setErrors] = useState({});
 
+  // Before adding a task, let's make sure the user didn't leave anything blank.
   const validate = () => {
     const errs = {};
     if (!title.trim()) errs.title = 'Title is required';
@@ -28,6 +29,8 @@ const TaskForm = () => {
     }
 
     addTask({ title: title.trim(), description: description.trim(), priority });
+    
+    // Clear everything out and close the form so it's fresh for next time.
     setTitle('');
     setDescription('');
     setPriority('Medium');
@@ -49,6 +52,7 @@ const TaskForm = () => {
     High: 'bg-red-500/15 text-red-400 border-red-500/30',
   };
 
+  // If the form isn't open, we just show a friendly button to get started.
   if (!isOpen) {
     return (
       <button
@@ -73,13 +77,11 @@ const TaskForm = () => {
       onSubmit={handleSubmit}
       className="glass-card p-6 space-y-5 animate-fade-in-up"
     >
-      {/* Header */}
       <div className="flex items-center gap-2 text-brand-400 mb-1">
         <HiOutlineSparkles className="w-5 h-5" />
         <h2 className="text-lg font-semibold">Create New Task</h2>
       </div>
 
-      {/* Title */}
       <div>
         <label htmlFor="task-title" className="block text-sm font-medium text-text-secondary mb-1.5">
           Title
@@ -97,7 +99,6 @@ const TaskForm = () => {
         {errors.title && <p className="mt-1 text-xs text-red-400">{errors.title}</p>}
       </div>
 
-      {/* Description */}
       <div>
         <label htmlFor="task-description" className="block text-sm font-medium text-text-secondary mb-1.5">
           Description
@@ -115,12 +116,12 @@ const TaskForm = () => {
         {errors.description && <p className="mt-1 text-xs text-red-400">{errors.description}</p>}
       </div>
 
-      {/* Priority */}
       <div>
         <label className="block text-sm font-medium text-text-secondary mb-2">
           Priority
         </label>
         <div className="flex gap-2">
+          {/* Let users pick priority levels with color-coded buttons to make it clear. */}
           {PRIORITIES.map((p) => (
             <button
               key={p}
@@ -139,7 +140,6 @@ const TaskForm = () => {
         </div>
       </div>
 
-      {/* Actions */}
       <div className="flex gap-3 pt-1">
         <button
           type="button"

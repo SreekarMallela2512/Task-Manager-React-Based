@@ -9,6 +9,7 @@ const SearchBar = () => {
       <HiOutlineMagnifyingGlass
         className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none"
       />
+      {/* The input automatically filters tasks as you type without needing a submit button. */}
       <input
         id="search-input"
         type="text"
@@ -19,6 +20,7 @@ const SearchBar = () => {
                    pl-12 pr-10 py-3 text-text-primary placeholder:text-text-muted
                    transition-all duration-200"
       />
+      {/* Show a little X to quickly clear the search when there's text typed in. */}
       {searchQuery && (
         <button
           id="clear-search"

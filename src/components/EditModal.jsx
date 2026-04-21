@@ -11,7 +11,7 @@ const EditModal = ({ task, onClose }) => {
   const [priority, setPriority] = useState(task.priority);
   const [errors, setErrors] = useState({});
 
-  // Close on Escape key
+  // Let users close the modal easily by just hitting the Escape key.
   useEffect(() => {
     const handleEsc = (e) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', handleEsc);
@@ -28,10 +28,14 @@ const EditModal = ({ task, onClose }) => {
   const handleSave = (e) => {
     e.preventDefault();
     const errs = validate();
+    
+    // If there are errors, stop right here so we don't save bad data.
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
       return;
     }
+    
+    // Apply the updates and close the modal when done.
     editTask(task.id, {
       title: title.trim(),
       description: description.trim(),
@@ -46,10 +50,10 @@ const EditModal = ({ task, onClose }) => {
     High: 'bg-red-500/15 text-red-400 border-red-500/30',
   };
 
+  // The modal overlay catches clicks outside the box to close it naturally.
   return (
     <div className="modal-overlay" onClick={onClose} id="edit-modal-overlay">
       <div className="modal-content" onClick={(e) => e.stopPropagation()} id="edit-modal">
-        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold text-text-primary">Edit Task</h2>
           <button
@@ -62,7 +66,6 @@ const EditModal = ({ task, onClose }) => {
         </div>
 
         <form onSubmit={handleSave} className="space-y-5">
-          {/* Title */}
           <div>
             <label htmlFor="edit-title" className="block text-sm font-medium text-text-secondary mb-1.5">
               Title
@@ -78,7 +81,6 @@ const EditModal = ({ task, onClose }) => {
             {errors.title && <p className="mt-1 text-xs text-red-400">{errors.title}</p>}
           </div>
 
-          {/* Description */}
           <div>
             <label htmlFor="edit-description" className="block text-sm font-medium text-text-secondary mb-1.5">
               Description
@@ -94,7 +96,6 @@ const EditModal = ({ task, onClose }) => {
             {errors.description && <p className="mt-1 text-xs text-red-400">{errors.description}</p>}
           </div>
 
-          {/* Priority */}
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-2">Priority</label>
             <div className="flex gap-2">
@@ -116,7 +117,6 @@ const EditModal = ({ task, onClose }) => {
             </div>
           </div>
 
-          {/* Actions */}
           <div className="flex gap-3 pt-1">
             <button
               type="button"
